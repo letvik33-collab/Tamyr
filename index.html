@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tamyr — халяль-ресторан восточной кухни в Костанае</title>
+<meta name="description" content="Tamyr — халяль-ресторан восточной кухни в Костанае. Меню, предзаказ и бронирование стола через WhatsApp.">
+<meta name="theme-color" content="#1d1411">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================
+   1. ПЕРЕМЕННЫЕ И БАЗА
+   ========================================================== */
+:root{
+  --bg:#1d1411;          /* шоколадный фон */
+  --bg-2:#2a1b17;        /* карточки */
+  --bg-3:#36231d;        /* поля, hover */
+  --wine:#4a1c24;        /* бордовый акцент */
+  --gold:#d4af6a;        /* золото */
+  --gold-2:#f0d9a0;      /* светлое золото */
+  --sand:#e9dcc3;        /* песочный текст */
+  --muted:#a8977f;
+  --line:rgba(212,175,106,.22);
+  --radius:20px;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{
+  font-family:var(--sans);color:var(--sand);background:var(--bg);
+  line-height:1.55;overflow-x:hidden;
+  padding-bottom:calc(90px + env(safe-area-inset-bottom));
+}
+img,svg{max-width:100%;display:block}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.container{width:100%;max-width:960px;margin:0 auto;padding:0 18px}
+section{padding:56px 0}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--gold-2)}
+.section-title{font-size:clamp(2rem,7vw,2.8rem);text-align:center;margin-bottom:8px}
+.section-sub{text-align:center;color:var(--muted);margin-bottom:28px;font-size:.95rem}
+.orn{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--gold);margin-bottom:10px}
+.orn::before,.orn::after{content:"";height:1px;width:48px;background:var(--line)}
+
+/* Кнопки */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:14px 26px;border-radius:999px;font-weight:600;font-size:1rem;
+  transition:transform .15s,box-shadow .2s,background .2s;
+}
+.btn:active{transform:scale(.97)}
+.btn-gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1b17;box-shadow:0 6px 20px rgba(212,175,106,.3)}
+.btn-ghost{border:1px solid var(--gold);color:var(--gold-2)}
+.btn-ghost:hover{background:rgba(212,175,106,.1)}
+.btn-wa{background:#25d366;color:#07300f;width:100%;padding:16px;font-size:1.05rem}
+
+/* ==========================================================
+   2. ШАПКА НАВИГАЦИИ
+   ========================================================== */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(29,20,17,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar .container{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--gold-2);letter-spacing:.04em}
+.brand svg{width:30px;height:30px}
+.topnav{display:flex;gap:16px;font-size:.9rem}
+.topnav a{color:var(--sand);text-decoration:none;opacity:.85}
+.topnav a:hover{color:var(--gold)}
+@media(max-width:520px){.topnav a:nth-child(3){display:none}}
+
+/* ==========================================================
+   3. HERO
+   ========================================================== */
+.hero{
+  position:relative;text-align:center;padding:72px 0 64px;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(212,175,106,.18),transparent 60%),
+    radial-gradient(ellipse at 100% 100%,rgba(74,28,36,.7),transparent 55%),
+    linear-gradient(180deg,#24161a,var(--bg));
+  overflow:hidden;
+}
+/* Мягкий восточный узор */
+.hero::before{
+  content:"";position:absolute;inset:0;opacity:.07;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 4l8 14 16 2-12 11 3 16-15-8-15 8 3-16L6 20l16-2z' fill='none' stroke='%23d4af6a' stroke-width='1'/%3E%3C/svg%3E");
+}
+.hero .container{position:relative}
+.logo-big{width:96px;height:96px;margin:0 auto 14px;filter:drop-shadow(0 6px 16px rgba(212,175,106,.35))}
+.halal{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 14px;margin-bottom:16px;
+  border:1px solid var(--gold);border-radius:999px;font-size:.78rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold-2);background:rgba(212,175,106,.08);
+}
+.hero h1{font-size:clamp(3.6rem,18vw,6.5rem);letter-spacing:.06em;color:var(--gold-2);text-shadow:0 4px 24px rgba(0,0,0,.5)}
+.hero .tagline{font-family:var(--serif);font-style:italic;font-size:clamp(1.25rem,5vw,1.7rem);color:var(--sand);margin:10px auto 14px;max-width:520px}
+.hero .info{color:var(--muted);font-size:.95rem;max-width:480px;margin:0 auto 28px}
+.hero-btns{display:flex;flex-direction:column;gap:12px;max-width:340px;margin:0 auto}
+@media(min-width:560px){.hero-btns{flex-direction:row;justify-content:center;max-width:none}}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:40px}
+.fact{background:rgba(42,27,23,.7);border:1px solid var(--line);border-radius:16px;padding:14px 8px;font-size:.8rem;color:var(--muted)}
+.fact b{display:block;font-family:var(--serif);font-size:1.4rem;color:var(--gold-2);font-weight:600}
+
+/* ==========================================================
+   4. МЕНЮ
+   ========================================================== */
+.tabs-wrap{position:sticky;top:58px;z-index:40;background:var(--bg);padding:10px 0;margin:0 -18px 18px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:0 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto;padding:10px 16px;border-radius:999px;border:1px solid var(--line);
+  color:var(--sand);font-size:.88rem;white-space:nowrap;transition:.2s;
+}
+.tab.active{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1b17;border-color:transparent;font-weight:600}
+
+.menu-list{display:grid;gap:12px}
+@media(min-width:700px){.menu-list{grid-template-columns:1fr 1fr}}
+.dish{
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);
+  animation:fade .35s ease both;
+}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dish h3{font-size:1.35rem;color:var(--sand)}
+.dish p{font-size:.85rem;color:var(--muted);flex:1}
+.dish-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.price{font-family:var(--serif);font-size:1.35rem;font-weight:700;color:var(--gold)}
+.add-btn{
+  padding:10px 16px;border-radius:999px;background:var(--wine);border:1px solid var(--gold);
+  color:var(--gold-2);font-size:.88rem;font-weight:600;transition:.2s;
+}
+.add-btn:hover{background:var(--gold);color:#2a1b17}
+.qty{display:inline-flex;align-items:center;gap:4px;background:var(--bg-3);border-radius:999px;padding:3px}
+.qty button{width:32px;height:32px;border-radius:50%;background:var(--wine);color:var(--gold-2);font-size:1.1rem;line-height:1}
+.qty span{min-width:26px;text-align:center;font-weight:600}
+.note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:20px}
+
+/* ==========================================================
+   5. БРОНИРОВАНИЕ
+   ========================================================== */
+.booking{background:linear-gradient(180deg,var(--bg),#241418)}
+.card{background:var(--bg-2);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);max-width:560px;margin:0 auto}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}
+.field input,.field textarea{
+  width:100%;background:var(--bg-3);border:1px solid var(--line);border-radius:14px;
+  padding:13px 14px;font-size:1rem; /* 16px — без автозума на iOS */
+  outline:none;transition:border .2s;color-scheme:dark;
+}
+.field input:focus,.field textarea:focus{border-color:var(--gold)}
+.field input.err{border-color:#e0646e}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:380px){.row{grid-template-columns:1fr}}
+.pre-box{background:var(--bg-3);border:1px dashed var(--gold);border-radius:16px;padding:14px;margin:6px 0 18px}
+.pre-box h4{font-family:var(--serif);font-size:1.2rem;color:var(--gold-2);margin-bottom:8px}
+.pre-item{display:flex;justify-content:space-between;gap:10px;font-size:.88rem;padding:3px 0}
+.pre-total{display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:8px;padding-top:8px;font-weight:600;color:var(--gold-2)}
+.pre-empty{font-size:.88rem;color:var(--muted)}
+.pre-box .link{color:var(--gold);font-size:.85rem;text-decoration:underline;margin-top:8px}
+
+/* ==========================================================
+   6. КОНТАКТЫ / ФУТЕР
+   ========================================================== */
+.contacts{text-align:center}
+.contacts a{color:var(--gold-2)}
+footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--line)}
+
+/* ==========================================================
+   7. ПЛАВАЮЩАЯ КОРЗИНА И ВЫДВИЖНАЯ ПАНЕЛЬ
+   ========================================================== */
+.cart-fab{
+  position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:60;
+  display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:999px;
+  background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1b17;font-weight:700;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);transition:transform .2s;
+}
+.cart-fab.bump{animation:bump .35s}
+@keyframes bump{50%{transform:scale(1.12)}}
+.cart-fab svg{width:24px;height:24px}
+.cart-fab .badge{background:var(--wine);color:var(--gold-2);border-radius:999px;min-width:24px;height:24px;display:grid;place-items:center;font-size:.8rem;padding:0 6px}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70;opacity:0;pointer-events:none;transition:opacity .25s}
+.overlay.open{opacity:1;pointer-events:auto}
+.drawer{
+  position:fixed;z-index:80;background:var(--bg-2);border-top:1px solid var(--gold);
+  left:0;right:0;bottom:0;max-height:88vh;max-height:88dvh;border-radius:26px 26px 0 0;
+  display:flex;flex-direction:column;transform:translateY(105%);transition:transform .3s ease;
+  box-shadow:0 -10px 40px rgba(0,0,0,.6);
+}
+.drawer.open{transform:none}
+@media(min-width:700px){
+  .drawer{left:auto;top:0;width:400px;max-height:none;border-radius:26px 0 0 26px;border-top:0;border-left:1px solid var(--gold);transform:translateX(105%)}
+  .drawer.open{transform:none}
+}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}
+.drawer-head h3{font-size:1.6rem}
+.close{width:38px;height:38px;border-radius:50%;background:var(--bg-3);font-size:1.3rem;color:var(--gold-2)}
+.drawer-body{flex:1;overflow-y:auto;padding:14px 20px}
+.ci{display:flex;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ci-name{font-weight:500}
+.ci-price{font-size:.8rem;color:var(--muted)}
+.ci-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.ci-sum{color:var(--gold);font-weight:600}
+.ci-del{font-size:.75rem;color:#e0846e;text-decoration:underline}
+.drawer-foot{padding:16px 20px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--line);display:grid;gap:12px}
+.total{display:flex;justify-content:space-between;font-family:var(--serif);font-size:1.5rem;color:var(--gold-2)}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+
+.toast{
+  position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);z-index:90;
+  background:var(--wine);border:1px solid var(--gold);color:var(--gold-2);padding:10px 18px;border-radius:999px;
+  font-size:.88rem;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+
+<body>
+
+<!-- ===== Верхняя панель ===== -->
+<header class="topbar">
+  <div class="container">
+    <a class="brand" href="#top" style="text-decoration:none">
+      <!-- Логотип: полумесяц и восьмиконечная звезда -->
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M44 8a26 26 0 1 0 0 48 21 21 0 1 1 0-48z" fill="#d4af6a"/>
+        <path d="M46 22l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#f0d9a0"/>
+      </svg>
+      Tamyr
+    </a>
+    <nav class="topnav">
+      <a href="#menu">Меню</a>
+      <a href="#booking">Бронь</a>
+      <a href="#contacts">Контакты</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <svg class="logo-big" viewBox="0 0 64 64" aria-hidden="true">
+      <path d="M44 8a26 26 0 1 0 0 48 21 21 0 1 1 0-48z" fill="#d4af6a"/>
+      <path d="M46 22l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#f0d9a0"/>
+    </svg>
+    <div class="halal">✦ Халяль · Halal ✦</div>
+    <h1>Tamyr</h1>
+    <p class="tagline">Корни восточной кухни — вкус традиций и тепло гостеприимства</p>
+    <p class="info">Халяль-ресторан в Костанае: плов, мангал, лагманы, турецкая печь и блюда на большую компанию — для семьи и друзей.</p>
+    <div class="hero-btns">
+      <a class="btn btn-gold" href="#menu">Смотреть меню</a>
+      <a class="btn btn-ghost" href="#booking">Забронировать стол</a>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>100%</b>халяль</div>
+      <div class="fact"><b>7</b>разделов меню</div>
+      <div class="fact"><b>Любая</b>компания</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== МЕНЮ ===== -->
+<section id="menu">
+  <div class="container">
+    <div class="orn">✦</div>
+    <h2 class="section-title">Меню</h2>
+    <p class="section-sub">Выберите блюда и добавьте их в предзаказ</p>
+
+    <div class="tabs-wrap"><div class="tabs" id="tabs" role="tablist"></div></div>
+    <div class="menu-list" id="menuList"></div>
+    <p class="note">Цены указаны в тенге (₸). Актуальные цены и наличие блюд уточняйте у администратора.</p>
+  </div>
+</section>
+
+<!-- ===== БРОНИРОВАНИЕ ===== -->
+<section id="booking" class="booking">
+  <div class="container">
+    <div class="orn">✦</div>
+    <h2 class="section-title">Забронировать стол</h2>
+    <p class="section-sub">Заявка уйдёт напрямую в WhatsApp ресторана</p>
+
+    <form class="card" id="bookForm" novalidate>
+      <div class="field">
+        <label for="name">Ваше имя</label>
+        <input id="name" type="text" autocomplete="name" placeholder="Например, Айдар" required>
+      </div>
+      <div class="field">
+        <label for="phone">Телефон</label>
+        <input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 7XX XXX XX XX" required>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="date">Дата</label>
+          <input id="date" type="date" required>
+        </div>
+        <div class="field">
+          <label for="time">Время</label>
+          <input id="time" type="time" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="guests">Количество гостей</label>
+        <!-- Без атрибута max: можно указать любую компанию -->
+        <input id="guests" type="number" min="1" step="1" inputmode="numeric" placeholder="Например, 2 или 20" required>
+      </div>
+      <div class="field">
+        <label for="comment">Пожелания (необязательно)</label>
+        <textarea id="comment" rows="3" placeholder="День рождения, детский стул, у окна…"></textarea>
+      </div>
+
+      <!-- Корзина внутри формы -->
+      <div class="pre-box" id="preBox"></div>
+
+      <button type="submit" class="btn btn-wa">Подтвердить бронь и предзаказ</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===== КОНТАКТЫ ===== -->
+<section id="contacts" class="contacts">
+  <div class="container">
+    <div class="orn">✦</div>
+    <h2 class="section-title">Контакты</h2>
+    <p class="section-sub">г. Костанай</p>
+    <p>WhatsApp и телефон: <a href="tel:+77087474007">+7 708 747 40 07</a></p>
+    <p style="margin-top:16px"><a class="btn btn-ghost" href="https://wa.me/77087474007" target="_blank" rel="noopener">Написать в WhatsApp</a></p>
+  </div>
+</section>
+</main>
+
+<footer>© <span id="year"></span> Tamyr · Халяль-ресторан восточной кухни · Костанай</footer>
+
+<!-- ===== Плавающая корзина ===== -->
+<button class="cart-fab" id="cartFab" aria-label="Открыть корзину">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+  <span id="fabSum">0 ₸</span>
+  <span class="badge" id="fabCount">0</span>
+</button>
+
+<!-- ===== Выдвижная панель корзины ===== -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Корзина предзаказа">
+  <div class="drawer-head">
+    <h3>Ваш предзаказ</h3>
+    <button class="close" id="closeCart" aria-label="Закрыть">✕</button>
+  </div>
+  <div class="drawer-body" id="cartBody"></div>
+  <div class="drawer-foot">
+    <div class="total"><span>Итого</span><span id="cartTotal">0 ₸</span></div>
+    <a class="btn btn-gold" href="#booking" id="toBooking">Оформить бронь</a>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================
+   ДАННЫЕ МЕНЮ
+   ВАЖНО: цены ниже — ориентировочные. Замените их на актуальные
+   из прайса ресторана (поле p — цена в тенге).
+   ========================================================== */
+const WA_NUMBER = '77087474007';
+
+const MENU = [
+  { id:'zakuski', title:'Закуски', items:[
+    {n:'Горское ассорти', d:'Ассорти мясных и сырных деликатесов', p:6500},
+    {n:'Кочевник', d:'Фирменная закуска по-кочевому', p:5900},
+    {n:'Мухаммара', d:'Паста из печёного перца и грецкого ореха', p:3200},
+    {n:'Хумус', d:'Нутовая паста с кунжутной пастой и оливковым маслом', p:2900},
+    {n:'Мозговая кость', d:'Запечённая кость с хрустящими гренками', p:4800},
+    {n:'Долма', d:'Виноградные листья с нежным мясным фаршем', p:3600},
+  ]},
+  { id:'salaty', title:'Салаты', items:[
+    {n:'Хрустящие баклажаны', d:'Баклажаны в кляре, томаты, сладкий соус', p:3800},
+    {n:'Ачучук', d:'Тонко нарезанные томаты с луком и зеленью', p:2400},
+    {n:'Цезарь', d:'Курица, пармезан, романо, гренки', p:3500},
+    {n:'Восточный', d:'Говядина, овощи, пряная заправка', p:3900},
+    {n:'Со страчателлой', d:'Сливочная страчателла, томаты, базилик', p:4600},
+  ]},
+  { id:'lagman', title:'Лагманы и супы', items:[
+    {n:'Гуйру лагман', d:'Жареный лагман с говядиной и овощами', p:3400},
+    {n:'Суйру лагман', d:'Классический лагман с наваристым бульоном', p:3300},
+    {n:'Шорпа из баранины', d:'Прозрачный бульон, картофель, зелень', p:3200},
+    {n:'Чучвара', d:'Мелкие пельмени в ароматном бульоне', p:3000},
+    {n:'Том ям', d:'Острый кисло-сладкий суп с морепродуктами', p:4200},
+    {n:'Рамён', d:'Лапша в насыщенном бульоне', p:3600},
+  ]},
+  { id:'vtorye', title:'Вторые блюда и мангал', items:[
+    {n:'Манты', d:'Крупные манты с мясом и луком', p:3200},
+    {n:'Ташкентский плов', d:'Рассыпчатый плов с говядиной и нутом', p:3600},
+    {n:'Фирменный плов «Tamyr»', d:'Авторский плов от шефа', p:4500},
+    {n:'Тай куырдак', d:'Жареное мясо жеребёнка с картофелем и луком', p:5800},
+    {n:'Стейк рибай', d:'Мраморная говядина на мангале', p:11500},
+    {n:'Шашлык из баранины', d:'Сочная баранина на углях', p:3400},
+    {n:'Люля-кебаб', d:'Рубленое мясо на мангале со специями', p:3000},
+  ]},
+  { id:'pech', title:'Турецкая печь и пицца', items:[
+    {n:'Пиде', d:'Турецкая лодочка с мясом и сыром', p:4200},
+    {n:'Лахмаджун', d:'Тонкая лепёшка с пряным мясным фаршем', p:3000},
+    {n:'Хачапури', d:'По-аджарски, с сыром и яйцом', p:3800},
+    {n:'Сэндвич', d:'Горячий сэндвич из печи', p:3500},
+    {n:'Пицца Маргарита', d:'Томаты, моцарелла, базилик', p:4200},
+    {n:'Пицца Мясная', d:'Халяль-мясо, сыр, соус', p:5200},
+  ]},
+  { id:'kompaniya', title:'На жаровне и на компанию', items:[
+    {n:'Казан кебаб', d:'Мясо с картофелем, томлёное на жаровне', p:7800},
+    {n:'Бешбармак', d:'Национальное блюдо — мясо и тонкое тесто', p:8500},
+    {n:'Сет из шашлыков', d:'Ассорти шашлыков на компанию', p:19500},
+  ]},
+  { id:'bar', title:'Бар и десерты', items:[
+    {n:'Авторский чай', d:'Чайник ароматного чая на травах и специях', p:2800},
+    {n:'Лимонад', d:'Домашний, в ассортименте', p:2200},
+    {n:'Морс', d:'Ягодный морс, 1 л', p:2500},
+    {n:'Кофе', d:'Американо, капучино, латте', p:1800},
+    {n:'Чизкейк', d:'Нежный сливочный чизкейк', p:2900},
+    {n:'Тирамису', d:'Классический десерт с маскарпоне', p:3100},
+  ]},
+];
+
+// Присваиваем уникальные id блюдам (категория-номер)
+MENU.forEach(c => c.items.forEach((it,i) => it.id = c.id + '-' + i));
+const ALL = Object.fromEntries(MENU.flatMap(c => c.items).map(i => [i.id, i]));
+
+/* ==========================================================
+   СОСТОЯНИЕ КОРЗИНЫ (хранится в localStorage)
+   ========================================================== */
+let cart = {};
+try { cart = JSON.parse(localStorage.getItem('tamyr_cart') || '{}'); } catch(e){ cart = {}; }
+// убираем позиции, которых уже нет в меню
+Object.keys(cart).forEach(id => { if (!ALL[id]) delete cart[id]; });
+
+let activeTab = MENU[0].id;
+
+const $ = s => document.querySelector(s);
+const fmt = n => n.toLocaleString('ru-RU').replace(/ /g,' ') + ' ₸';
+const save = () => { try { localStorage.setItem('tamyr_cart', JSON.stringify(cart)); } catch(e){} };
+const count = () => Object.values(cart).reduce((a,b)=>a+b,0);
+const total = () => Object.entries(cart).reduce((s,[id,q]) => s + ALL[id].p*q, 0);
+
+/* ==========================================================
+   РЕНДЕР МЕНЮ
+   ========================================================== */
+function renderTabs(){
+  $('#tabs').innerHTML = MENU.map(c =>
+    `<button class="tab ${c.id===activeTab?'active':''}" role="tab" data-tab="${c.id}">${c.title}</button>`).join('');
+}
+function renderMenu(){
+  const cat = MENU.find(c => c.id === activeTab);
+  $('#menuList').innerHTML = cat.items.map(it => {
+    const q = cart[it.id] || 0;
+    const action = q
+      ? `<div class="qty"><button data-dec="${it.id}" aria-label="Меньше">−</button><span>${q}</span><button data-inc="${it.id}" aria-label="Больше">+</button></div>`
+      : `<button class="add-btn" data-add="${it.id}">В корзину</button>`;
+    return `<article class="dish"><h3>${it.n}</h3><p>${it.d}</p>
+      <div class="dish-foot"><span class="price">${fmt(it.p)}</span>${action}</div></article>`;
+  }).join('');
+}
+
+/* ==========================================================
+   РЕНДЕР КОРЗИНЫ (панель, плавающая кнопка, блок в форме)
+   ========================================================== */
+function renderCart(){
+  const ids = Object.keys(cart);
+  // Панель
+  $('#cartBody').innerHTML = ids.length ? ids.map(id => {
+    const it = ALL[id], q = cart[id];
+    return `<div class="ci">
+      <div><div class="ci-name">${it.n}</div><div class="ci-price">${fmt(it.p)} × ${q}</div></div>
+      <div class="ci-right">
+        <div class="qty"><button data-dec="${id}" aria-label="Меньше">−</button><span>${q}</span><button data-inc="${id}" aria-label="Больше">+</button></div>
+        <span class="ci-sum">${fmt(it.p*q)}</span>
+        <button class="ci-del" data-del="${id}">Удалить</button>
+      </div></div>`;
+  }).join('') : `<div class="empty">Корзина пуста.<br>Добавьте блюда из меню.</div>`;
+  $('#cartTotal').textContent = fmt(total());
+
+  // Плавающая кнопка
+  $('#fabCount').textContent = count();
+  $('#fabSum').textContent = fmt(total());
+
+  // Блок предзаказа в форме
+  $('#preBox').innerHTML = ids.length
+    ? `<h4>Предзаказ</h4>` +
+      ids.map(id => `<div class="pre-item"><span>${ALL[id].n} × ${cart[id]}</span><span>${fmt(ALL[id].p*cart[id])}</span></div>`).join('') +
+      `<div class="pre-total"><span>Итого</span><span>${fmt(total())}</span></div>
+       <button type="button" class="link" id="editCart">Изменить</button>`
+    : `<h4>Предзаказ</h4><p class="pre-empty">Блюда не выбраны — можно забронировать только стол или <a href="#menu" style="color:var(--gold)">выбрать блюда в меню</a>.</p>`;
+}
+
+function refresh(){ save(); renderMenu(); renderCart(); }
+
+/* ==========================================================
+   ДЕЙСТВИЯ С КОРЗИНОЙ
+   ========================================================== */
+function add(id){
+  cart[id] = (cart[id]||0) + 1;
+  refresh();
+  const fab = $('#cartFab');
+  fab.classList.remove('bump'); void fab.offsetWidth; fab.classList.add('bump');
+}
+function dec(id){
+  if (!cart[id]) return;
+  if (--cart[id] <= 0) delete cart[id];
+  refresh();
+}
+function del(id){ delete cart[id]; refresh(); }
+
+// Делегирование кликов
+document.addEventListener('click', e => {
+  const t = e.target.closest('button, a');
+  if (!t) return;
+  if (t.dataset.tab){ activeTab = t.dataset.tab; renderTabs(); renderMenu(); return; }
+  if (t.dataset.add){ add(t.dataset.add); return; }
+  if (t.dataset.inc){ add(t.dataset.inc); return; }
+  if (t.dataset.dec){ dec(t.dataset.dec); return; }
+  if (t.dataset.del){ del(t.dataset.del); return; }
+  if (t.id === 'editCart'){ openCart(); return; }
+});
+
+/* Открытие / закрытие панели */
+function openCart(){ $('#drawer').classList.add('open'); $('#overlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeCart(){ $('#drawer').classList.remove('open'); $('#overlay').classList.remove('open'); document.body.style.overflow=''; }
+$('#cartFab').addEventListener('click', openCart);
+$('#closeCart').addEventListener('click', closeCart);
+$('#overlay').addEventListener('click', closeCart);
+$('#toBooking').addEventListener('click', closeCart);
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeCart(); });
+
+/* ==========================================================
+   ФОРМА БРОНИРОВАНИЯ → WHATSAPP
+   ========================================================== */
+const dateInput = $('#date');
+// Нельзя выбрать прошедшую дату (по локальному времени)
+(function(){
+  const d = new Date();
+  const iso = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  dateInput.min = iso;
+})();
+$('#year').textContent = new Date().getFullYear();
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast.t); toast.t = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+function formatDate(iso){ const [y,m,d] = iso.split('-'); return `${d}.${m}.${y}`; }
+
+$('#bookForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const f = {
+    name: $('#name'), phone: $('#phone'), date: $('#date'),
+    time: $('#time'), guests: $('#guests'), comment: $('#comment')
+  };
+  // Простая валидация
+  let ok = true;
+  ['name','phone','date','time','guests'].forEach(k => {
+    const bad = !f[k].value.trim();
+    f[k].classList.toggle('err', bad);
+    if (bad) ok = false;
+  });
+  const guests = parseInt(f.guests.value, 10);
+  if (f.guests.value && (!Number.isInteger(guests) || guests < 1)){ f.guests.classList.add('err'); ok = false; }
+  if (f.phone.value && f.phone.value.replace(/\D/g,'').length < 10){ f.phone.classList.add('err'); ok = false; }
+  if (!ok){ toast('Пожалуйста, заполните все обязательные поля'); return; }
+
+  // Формируем сообщение
+  const L = [];
+  L.push('🌙 *Бронь стола — Tamyr*');
+  L.push('━━━━━━━━━━━━━━');
+  L.push(`👤 Имя: ${f.name.value.trim()}`);
+  L.push(`📞 Телефон: ${f.phone.value.trim()}`);
+  L.push(`📅 Дата: ${formatDate(f.date.value)}`);
+  L.push(`🕐 Время: ${f.time.value}`);
+  L.push(`👥 Гостей: ${guests}`);
+  if (f.comment.value.trim()) L.push(`💬 Пожелания: ${f.comment.value.trim()}`);
+
+  const ids = Object.keys(cart);
+  if (ids.length){
+    L.push('', '🍽 *Предзаказ:*');
+    ids.forEach((id,i) => {
+      const it = ALL[id], q = cart[id];
+      L.push(`${i+1}. ${it.n} — ${q} × ${fmt(it.p)} = ${fmt(it.p*q)}`);
+    });
+    L.push('━━━━━━━━━━━━━━', `💰 *Итого: ${fmt(total())}*`);
+  } else {
+    L.push('', '🍽 Предзаказ: без предзаказа');
+  }
+  L.push('', 'Прошу подтвердить бронь. Спасибо!');
+
+  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(L.join('\n'))}`;
+  window.open(url, '_blank', 'noopener');
+});
+
+// Снимаем подсветку ошибки при вводе
+document.querySelectorAll('.field input').forEach(i => i.addEventListener('input', () => i.classList.remove('err')));
+
+/* ==========================================================
+   ЗАПУСК
+   ========================================================== */
+renderTabs();
+refresh();
+</script>
+</body>
+</html>
