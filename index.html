@@ -32,9 +32,25 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{
-  font-family:var(--sans);color:var(--sand);background:var(--bg);
+  font-family:var(--sans);color:var(--sand);background:var(--bg);isolation:isolate;
   line-height:1.55;overflow-x:hidden;
   padding-bottom:calc(90px + env(safe-area-inset-bottom));
+}
+body::before{
+  content:"";position:fixed;inset:-18%;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 18% 28%,rgba(128,67,42,.22),transparent 34%),
+    radial-gradient(ellipse at 82% 34%,rgba(111,44,55,.23),transparent 38%),
+    radial-gradient(ellipse at 48% 84%,rgba(180,130,65,.12),transparent 36%),
+    linear-gradient(135deg,#1d1411 5%,#261817 48%,#1d1411 100%);
+  background-size:145% 145%;background-position:0% 0%;
+  animation:ambient-drift 48s ease-in-out infinite alternate;
+  will-change:background-position;
+}
+@keyframes ambient-drift{
+  0%{background-position:0% 0%}
+  50%{background-position:100% 38%}
+  100%{background-position:28% 100%}
 }
 img,svg{max-width:100%;display:block}
 button,input,textarea{font:inherit;color:inherit}
@@ -83,7 +99,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
   background:
     radial-gradient(ellipse at 50% 0%,rgba(212,175,106,.18),transparent 60%),
     radial-gradient(ellipse at 100% 100%,rgba(74,28,36,.7),transparent 55%),
-    linear-gradient(180deg,#24161a,var(--bg));
+    linear-gradient(180deg,rgba(36,22,26,.62),rgba(29,20,17,.22));
   overflow:hidden;
 }
 /* Мягкий восточный узор */
@@ -139,9 +155,16 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
 .dish{
   background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
   display:flex;flex-direction:column;box-shadow:var(--shadow);
-  animation:fade .35s ease both;
+  transition:transform .28s ease,box-shadow .28s ease,border-color .28s ease;
 }
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes card-in{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.dish.reveal-ready{opacity:0;transform:translateY(18px) scale(.98)}
+.dish.reveal-ready.is-visible{animation:card-in .48s cubic-bezier(.2,.7,.25,1) both}
+.dish:nth-child(2).is-visible{animation-delay:35ms}.dish:nth-child(3).is-visible{animation-delay:70ms}.dish:nth-child(4).is-visible{animation-delay:105ms}
+.dish:nth-child(5).is-visible{animation-delay:140ms}.dish:nth-child(6).is-visible{animation-delay:175ms}
+.dish:hover{transform:translateY(-5px) scale(1.012);box-shadow:0 18px 42px rgba(0,0,0,.48);border-color:rgba(212,175,106,.48)}
+.menu-list{transition:opacity .2s ease,transform .2s ease}
+.menu-list.is-changing{opacity:0;transform:translateY(8px)}
 .dish-img{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--wine)}
 .dish-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
 .dish:hover .dish-img img,.dish:active .dish-img img{transform:scale(1.07)}
@@ -169,6 +192,8 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
 .add-btn b{font-size:1.2rem;line-height:1}
 .add-btn:hover{box-shadow:0 6px 18px rgba(212,175,106,.45)}
 .add-btn:active{transform:scale(.95)}
+.tab:hover,.search-clear:hover,.qty button:hover,.close:hover{filter:brightness(1.15)}
+.tab:active,.search-clear:active,.qty button:active,.close:active{transform:scale(.96)}
 .qty{display:inline-flex;align-items:center;gap:4px;background:var(--bg-3);border-radius:999px;padding:3px}
 .qty button{width:36px;height:36px;border-radius:50%;background:var(--wine);color:var(--gold-2);font-size:1.2rem;line-height:1}
 .qty span{min-width:26px;text-align:center;font-weight:600}
@@ -177,7 +202,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
 /* ==========================================================
    5. БРОНИРОВАНИЕ
    ========================================================== */
-.booking{background:linear-gradient(180deg,var(--bg),#241418)}
+.booking{background:linear-gradient(180deg,rgba(29,20,17,.24),rgba(36,20,24,.58))}
 .card{background:var(--bg-2);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:var(--shadow);max-width:560px;margin:0 auto}
 .field{margin-bottom:14px}
 .field label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px}
@@ -203,6 +228,19 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
 .contacts{text-align:center}
 .contacts a{color:var(--gold-2)}
 footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--line)}
+@media(max-width:380px){
+  .container{padding-left:14px;padding-right:14px}
+  .dish-body{padding:12px}
+  .dish h3{font-size:1.3rem}
+  .add-btn{padding:10px 13px;font-size:.86rem}
+  .price{font-size:1.4rem}
+  .hero{padding:56px 0 48px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .dish.reveal-ready{opacity:1;transform:none}
+  body::before{animation:none}
+}
 
 /* ==========================================================
    7. ПЛАВАЮЩАЯ КОРЗИНА И ВЫДВИЖНАЯ ПАНЕЛЬ
@@ -445,101 +483,101 @@ const CATEGORIES = [
 
 const MENU = [
   // Холодные закуски
-  { id:1, name:"Горское ассорти", description:"овощная нарезка из томатов, огурцов, болгарского перца, оливок, маслин, зелени и сыра сулугуни", price:3200, category:"cold-starters", image:'' },
+  { id:1, name:"Горское ассорти", description:"овощная нарезка из томатов, огурцов, болгарского перца, оливок, маслин, зелени и сыра сулугуни", price:3200, category:"cold-starters", image:'images/gorskoeassorti.webp' },
   { id:2, name:"Кочевник", description:"казы копченое, бастурма с телятины, жая конины отварная", price:6500, category:"cold-starters", image:'' },
-  { id:3, name:"Восточное мезе со свежей питой", description:"бабагануш – баклажанная икра, дзадзики – на основе йогурта и свежих огурцов, хумус – на основе нута, мухаммара – на основе сладкого перца", price:3500, category:"cold-starters", image:'' },
+  { id:3, name:"Восточное мезе со свежей питой", description:"бабагануш – баклажанная икра, дзадзики – на основе йогурта и свежих огурцов, хумус – на основе нута, мухаммара – на основе сладкого перца", price:3500, category:"cold-starters", image:'images/vostochnoemeze.webp' },
   { id:4, name:"Мухаммара со свежей питой", description:"закуска на основе сладкого красного перца и свежей дрожжевой лепёшкой", price:1500, category:"cold-starters", image:'' },
   { id:5, name:"Хумус со свежей питой", description:"популярная закуска на основе нута и свежей дрожжевой лепёшкой", price:1500, category:"cold-starters", image:'' },
-  { id:6, name:"Бабагануш со свежей питой", description:"восточная закуска на основе запечённых баклажан и свежей дрожжевой лепёшкой", price:1700, category:"cold-starters", image:'' },
+  { id:6, name:"Бабагануш со свежей питой", description:"восточная закуска на основе запечённых баклажан и свежей дрожжевой лепёшкой", price:1700, category:"cold-starters", image:'images/babaganush.webp' },
   { id:7, name:"Лабне со свежей питой", description:"традиционный кисломолочный продукт на основе йогурта и сыра, подаётся с дрожжевой лепёшкой", price:1500, category:"cold-starters", image:'' },
   { id:8, name:"Дзадзики со свежей питой", description:"закуска на основе йогурта и свежих огурцов, подаётся с дрожжевой лепёшкой", price:1500, category:"cold-starters", image:'' },
   // Горячие закуски
-  { id:9, name:"Мозговая кость", description:"с питой и соусом чимичурри, 25-30 мин.", price:2700, category:"hot-starters", image:'' },
+  { id:9, name:"Мозговая кость", description:"с питой и соусом чимичурри, 25-30 мин.", price:2700, category:"hot-starters", image:'images/mozgovayakost.webp' },
   { id:10, name:"Долма", description:"из виноградных листьев с соусом мацони", price:2300, category:"hot-starters", image:'' },
   { id:11, name:"Жареный сулугуни", description:"с соусом свит чили", price:2500, category:"hot-starters", image:'' },
   // Салаты
-  { id:12, name:"Хрустящие баклажаны", description:"с рукколой и томатами черри", price:2600, category:"salads", image:'' },
-  { id:13, name:"Салат «Ачичук»", description:"со свежими помидорами и луком", price:1800, category:"salads", image:'' },
-  { id:14, name:"Цезарь с цыплёнком", description:"цыплёнок, пармезан, микс салата, черри", price:2500, category:"salads", image:'' },
+  { id:12, name:"Хрустящие баклажаны", description:"с рукколой и томатами черри", price:2600, category:"salads", image:'images/baklashani.webp' },
+  { id:13, name:"Салат «Ачичук»", description:"со свежими помидорами и луком", price:1800, category:"salads", image:'images/achichuk.webp' },
+  { id:14, name:"Цезарь с цыплёнком", description:"цыплёнок, пармезан, микс салата, черри", price:2500, category:"salads", image:'images/cesarsciplenkom.webp' },
   { id:15, name:"Цезарь с креветками", description:"креветки, пармезан, микс салата, черри", price:3200, category:"salads", image:'' },
-  { id:16, name:"Восточный салат", description:"нежнейшая телятина, огурцы, томаты, кинза, сельдерей, специи", price:2600, category:"salads", image:'' },
-  { id:17, name:"Салат со страчателлой и голубикой", description:"шпинат, голубика, сыр страчателла", price:2600, category:"salads", image:'' },
-  { id:18, name:"Греческий с сыром сиртаки", description:"овощи с сыром сиртаки и соусом песто", price:2600, category:"salads", image:'' },
-  { id:19, name:"Салат с сёмгой и креветками", description:"микс салата, креветки, сёмга, фирменный соус", price:2600, category:"salads", image:'' },
-  { id:20, name:"Салат Леванте", description:"микс салата, малосолёная рыба, лабне и соусом винегрет", price:2600, category:"salads", image:'' },
+  { id:16, name:"Восточный салат", description:"нежнейшая телятина, огурцы, томаты, кинза, сельдерей, специи", price:2600, category:"salads", image:'images/vostochniysalat.webp' },
+  { id:17, name:"Салат со страчателлой и голубикой", description:"шпинат, голубика, сыр страчателла", price:2600, category:"salads", image:'images/salat-stracciatella.webp' },
+  { id:18, name:"Греческий с сыром сиртаки", description:"овощи с сыром сиртаки и соусом песто", price:2600, category:"salads", image:'images/grecheskiyssirom.webp' },
+  { id:19, name:"Салат с сёмгой и креветками", description:"микс салата, креветки, сёмга, фирменный соус", price:2600, category:"salads", image:'images/salat-semga-krevetki-v6.webp' },
+  { id:20, name:"Салат Леванте", description:"микс салата, малосолёная рыба, лабне и соусом винегрет", price:2600, category:"salads", image:'images/salatlevante.webp' },
   // Лагманы
-  { id:21, name:"Гуйру лагман", description:"телятина с овощами, восточными специями и ручной вытяжной лапшой", price:2600, category:"lagman", image:'' },
+  { id:21, name:"Гуйру лагман", description:"телятина с овощами, восточными специями и ручной вытяжной лапшой", price:2600, category:"lagman", image:'images/guirylagman.webp' },
   { id:22, name:"Суйру лагман", description:"телятина с овощами, восточными специями и ручной вытяжной лапшой, мелкая нарезка, особая подача", price:2600, category:"lagman", image:'' },
-  { id:23, name:"Цомян", description:"жареный лагман", price:2800, category:"lagman", image:'' },
+  { id:23, name:"Цомян", description:"жареный лагман", price:2800, category:"lagman", image:'images/comyan.webp' },
   { id:24, name:"Мушуру лагман", description:"с добавлением древесных грибов и омлета", price:2800, category:"lagman", image:'' },
   // Супы
-  { id:25, name:"Шорпа из баранины", description:"", price:2300, category:"soups", image:'' },
+  { id:25, name:"Шорпа из баранины", description:"", price:2300, category:"soups", image:'images/shorpabaranina.webp' },
   { id:26, name:"Чучвара из телятины", description:"пельмени с бульоном", price:2200, category:"soups", image:'' },
-  { id:27, name:"Домашний лагман", description:"лагман, телятина, овощи", price:2800, category:"soups", image:'' },
-  { id:28, name:"Том ям", description:"креветки, сёмга, томаты черри, шампиньоны, кокосовое молоко", price:3700, category:"soups", image:'' },
+  { id:27, name:"Домашний лагман", description:"лагман, телятина, овощи", price:2800, category:"soups", image:'images/home-lagman-v8.webp' },
+  { id:28, name:"Том ям", description:"креветки, сёмга, томаты черри, шампиньоны, кокосовое молоко", price:3700, category:"soups", image:'images/tomyam.webp' },
   { id:29, name:"Рамён", description:"насыщенный бульон, лапша, грибы, яйцо курицы, рулет куриный, листья нори, зелень", price:3300, category:"soups", image:'' },
-  { id:30, name:"Грибной крем суп", description:"грибы, сливки", price:2300, category:"soups", image:'' },
-  { id:31, name:"Чечевичный крем суп", description:"чечевица, сливки", price:2200, category:"soups", image:'' },
-  { id:32, name:"Окрошка", description:"с говядиной", price:1900, category:"soups", image:'' },
+  { id:30, name:"Грибной крем суп", description:"грибы, сливки", price:2300, category:"soups", image:'images/mushroom-cream-soup-v8.webp' },
+  { id:31, name:"Чечевичный крем суп", description:"чечевица, сливки", price:2200, category:"soups", image:'images/chechevicasoup.webp' },
+  { id:32, name:"Окрошка", description:"с говядиной", price:1900, category:"soups", image:'images/okroshka.webp' },
   // Вторые блюда
-  { id:33, name:"Манты с телятиной", description:"", price:2600, category:"mains", image:'' },
-  { id:34, name:"Манты с телятиной жареные", description:"", price:2600, category:"mains", image:'' },
+  { id:33, name:"Манты с телятиной", description:"", price:2600, category:"mains", image:'images/mantitelyatina.webp' },
+  { id:34, name:"Манты с телятиной жареные", description:"", price:2600, category:"mains", image:'images/mantitelyatinazharennie.webp' },
   { id:35, name:"Манты с тыквой", description:"", price:2300, category:"mains", image:'' },
-  { id:36, name:"Манты с тыквой жареные", description:"", price:2300, category:"mains", image:'' },
-  { id:37, name:"Плов ташкентский", description:"из телятины", price:2500, category:"mains", image:'' },
-  { id:38, name:"«Tamyr» фирменный плов", description:"с добавлением казы и шужык", price:3200, category:"mains", image:'' },
-  { id:39, name:"Тай куырдак с питой", description:"куырдак из конины", price:2700, category:"mains", image:'' },
-  { id:40, name:"Стейк из сёмги в миндальной панировке", description:"с рисом и сливочным соусом", price:6100, category:"mains", image:'' },
+  { id:36, name:"Манты с тыквой жареные", description:"", price:2300, category:"mains", image:'images/manty-fried-pumpkin-v8.webp' },
+  { id:37, name:"Плов ташкентский", description:"из телятины", price:2500, category:"mains", image:'images/plov-tashkent-v6.webp' },
+  { id:38, name:"«Tamyr» фирменный плов", description:"с добавлением казы и шужык", price:3200, category:"mains", image:'images/tamyrfirmennyiplov.webp' },
+  { id:39, name:"Тай куырдак с питой", description:"куырдак из конины", price:2700, category:"mains", image:'images/taykuurdak.webp' },
+  { id:40, name:"Стейк из сёмги в миндальной панировке", description:"с рисом и сливочным соусом", price:6100, category:"mains", image:'images/steaksemga.webp' },
   { id:41, name:"Судак в сливочном соусе с рисом", description:"", price:3600, category:"mains", image:'' },
-  { id:42, name:"Телятина в сливочном соусе и грибами", description:"с картофельным пюре", price:4200, category:"mains", image:'' },
-  { id:43, name:"Каре ягнёнка с картофельным пюре и соусом Демиглас", description:"", price:5200, category:"mains", image:'' },
-  { id:44, name:"Мини шашлычки по азиатски", description:"шашлычки из говядины", price:4200, category:"mains", image:'' },
+  { id:42, name:"Телятина в сливочном соусе и грибами", description:"с картофельным пюре", price:4200, category:"mains", image:'images/telyatina-slivochniy-v6.webp' },
+  { id:43, name:"Каре ягнёнка с картофельным пюре и соусом Демиглас", description:"", price:5200, category:"mains", image:'images/kareyagnenka.webp' },
+  { id:44, name:"Мини шашлычки по азиатски", description:"шашлычки из говядины", price:4200, category:"mains", image:'images/minishashlik.webp' },
   // Мангал
-  { id:45, name:"Ягнёнок", description:"", price:2500, category:"grill", image:'' },
+  { id:45, name:"Ягнёнок", description:"", price:2500, category:"grill", image:'images/yagnenok.webp' },
   { id:46, name:"Джигар", description:"", price:2200, category:"grill", image:'' },
   { id:47, name:"Куриное филе", description:"", price:2200, category:"grill", image:'' },
   { id:48, name:"Люля кебаб", description:"телятина-баранина", price:2200, category:"grill", image:'' },
-  { id:49, name:"Антрекот", description:"из баранины", price:3200, category:"grill", image:'' },
-  { id:50, name:"Рулет", description:"люля кебаб в бараньей сетке", price:2200, category:"grill", image:'' },
+  { id:49, name:"Антрекот", description:"из баранины", price:3200, category:"grill", image:'images/antrekot-v8.webp' },
+  { id:50, name:"Рулет", description:"люля кебаб в бараньей сетке", price:2200, category:"grill", image:'images/rulet.webp' },
   { id:51, name:"Куриные крылышки", description:"", price:2200, category:"grill", image:'' },
   { id:52, name:"Утиное филе", description:"", price:2200, category:"grill", image:'' },
   { id:53, name:"Овощи на гриле", description:"", price:1500, category:"grill", image:'' },
   { id:54, name:"Шампиньоны на гриле", description:"", price:1800, category:"grill", image:'' },
   // На жаровне
   { id:55, name:"Цыплёнок с овощами", description:"цыплёнок, приготовленный с овощами на жаровне", price:2700, category:"brazier", image:'' },
-  { id:56, name:"Телятина с овощами", description:"мякоть телятины с овощами на жаровне", price:3900, category:"brazier", image:'' },
+  { id:56, name:"Телятина с овощами", description:"мякоть телятины с овощами на жаровне", price:3900, category:"brazier", image:'images/telyatina-ovoshi-v6.webp' },
   { id:57, name:"Рёбра ягнёнка с овощами", description:"бараньи рёбра с картофелем на жаровне", price:3500, category:"brazier", image:'' },
-  { id:58, name:"Казан кебаб", description:"традиционное блюдо из рёбер телятины и картофеля", price:3500, category:"brazier", image:'' },
+  { id:58, name:"Казан кебаб", description:"традиционное блюдо из рёбер телятины и картофеля", price:3500, category:"brazier", image:'images/kazan-kebab-v8.webp' },
   { id:59, name:"Казан кебаб с рисом", description:"мякоть телятины с луком и рисом", price:3900, category:"brazier", image:'' },
-  { id:60, name:"Телятина с картофелем фри и овощами", description:"мякоть телятины, с картофелем", price:3100, category:"brazier", image:'' },
+  { id:60, name:"Телятина с картофелем фри и овощами", description:"мякоть телятины, с картофелем", price:3100, category:"brazier", image:'images/fri-v8.webp' },
   { id:61, name:"Ган фан", description:"телятина с овощами и рисом", price:2900, category:"brazier", image:'' },
-  { id:62, name:"Казан кебаб из баранины", description:"", price:3500, category:"brazier", image:'' },
+  { id:62, name:"Казан кебаб из баранины", description:"", price:3500, category:"brazier", image:'images/kazan-kebab-v8.webp' },
   // Блюда на компанию
-  { id:63, name:"Сет из шашлыков", description:"люля кебаб, ягнёнок, джигар, рулет, куриное филе, куриные крылышки, утиное филе, шампиньоны, овощи на гриле, на 7-8 чел.", price:17500, category:"company", image:'' },
-  { id:64, name:"Tamyr фирменный плов", description:"с добавлением казы и шужык, 5-6 чел.", price:17000, category:"company", image:'' },
-  { id:65, name:"Казан кебаб на компанию", description:"5-6 чел.", price:17500, category:"company", image:'' },
+  { id:63, name:"Сет из шашлыков", description:"люля кебаб, ягнёнок, джигар, рулет, куриное филе, куриные крылышки, утиное филе, шампиньоны, овощи на гриле, на 7-8 чел.", price:17500, category:"company", image:'images/minishashlik.webp' },
+  { id:64, name:"Tamyr фирменный плов", description:"с добавлением казы и шужык, 5-6 чел.", price:17000, category:"company", image:'images/tamyrfirmennyiplov.webp' },
+  { id:65, name:"Казан кебаб на компанию", description:"5-6 чел.", price:17500, category:"company", image:'images/kazan-kebab-v8.webp' },
   { id:66, name:"Бешбармак", description:"по предварительному заказу, на 6-8 чел.", price:35000, category:"company", image:'' },
-  { id:67, name:"Баурсаки", description:"при предварительном заказе", price:800, category:"company", image:'' },
+  { id:67, name:"Баурсаки", description:"при предварительном заказе", price:800, category:"company", image:'images/baursaki.webp' },
   // Турецкая печь
-  { id:68, name:"Патлыджан тавук", description:"цыплёнок в сливочном соусе с овощами", price:2700, category:"turkish-oven", image:'' },
-  { id:69, name:"Гювеч телятины с овощами", description:"подаётся в кице, запечённый в шапке из теста", price:3500, category:"turkish-oven", image:'' },
+  { id:68, name:"Патлыджан тавук", description:"цыплёнок в сливочном соусе с овощами", price:2700, category:"turkish-oven", image:'images/patlydzhan-tavuk-v6.webp' },
+  { id:69, name:"Гювеч телятины с овощами", description:"подаётся в кице, запечённый в шапке из теста", price:3500, category:"turkish-oven", image:'images/guvechtelytiny.webp' },
   { id:70, name:"Пиде с говядиной и овощами", description:"", price:2400, category:"turkish-oven", image:'' },
   { id:71, name:"Пиде сырная", description:"", price:2400, category:"turkish-oven", image:'' },
-  { id:72, name:"Пиде с сёмгой и страчателлой", description:"", price:3500, category:"turkish-oven", image:'' },
-  { id:73, name:"Лахмаджун из баранины", description:"", price:2200, category:"turkish-oven", image:'' },
-  { id:74, name:"Лахмаджун ачили", description:"острый", price:2200, category:"turkish-oven", image:'' },
-  { id:75, name:"Лахмаджун с телятиной и сыром сулугуни", description:"", price:2500, category:"turkish-oven", image:'' },
-  { id:76, name:"Хачапури по-аджарски", description:"", price:3200, category:"turkish-oven", image:'' },
-  { id:77, name:"Мини хачапури", description:"ассорти: по-аджарский, том ям, груша, говядина, грибы", price:4900, category:"turkish-oven", image:'' },
-  { id:78, name:"Хачапури на шампуре", description:"", price:3100, category:"turkish-oven", image:'' },
+  { id:72, name:"Пиде с сёмгой и страчателлой", description:"", price:3500, category:"turkish-oven", image:'images/pidessemgoi.webp' },
+  { id:73, name:"Лахмаджун из баранины", description:"", price:2200, category:"turkish-oven", image:'images/lahmajun-v8.webp' },
+  { id:74, name:"Лахмаджун ачили", description:"острый", price:2200, category:"turkish-oven", image:'images/lahmajun-v8.webp' },
+  { id:75, name:"Лахмаджун с телятиной и сыром сулугуни", description:"", price:2500, category:"turkish-oven", image:'images/lahmajun-v8.webp' },
+  { id:76, name:"Хачапури по-аджарски", description:"", price:3200, category:"turkish-oven", image:'images/hachapuri.webp' },
+  { id:77, name:"Мини хачапури", description:"ассорти: по-аджарский, том ям, груша, говядина, грибы", price:4900, category:"turkish-oven", image:'images/minihachapuri.webp' },
+  { id:78, name:"Хачапури на шампуре", description:"", price:3100, category:"turkish-oven", image:'images/hachapurinashampure.webp' },
   // Пицца
-  { id:79, name:"Пицца пеперони", description:"", price:3200, category:"pizza", image:'' },
+  { id:79, name:"Пицца пеперони", description:"", price:3200, category:"pizza", image:'images/peperoni.webp' },
   { id:80, name:"Пицца Маргарита", description:"", price:2900, category:"pizza", image:'' },
-  { id:81, name:"Пицца курица с грибами", description:"", price:3600, category:"pizza", image:'' },
-  { id:82, name:"Пицца четыре сыра", description:"", price:3500, category:"pizza", image:'' },
+  { id:81, name:"Пицца курица с грибами", description:"", price:3600, category:"pizza", image:'images/pizzakuricasgribami.webp' },
+  { id:82, name:"Пицца четыре сыра", description:"", price:3500, category:"pizza", image:'images/pizzachetiresira.webp' },
   // Выпечка
   { id:83, name:"Восточная лепёшка", description:"", price:500, category:"bakery", image:'' },
-  { id:84, name:"Пита из турецкой печи", description:"", price:500, category:"bakery", image:'' },
+  { id:84, name:"Пита из турецкой печи", description:"", price:500, category:"bakery", image:'images/pitaispechi.webp' },
   // Соуса
   { id:85, name:"Тар-Тар", description:"", price:500, category:"sauces", image:'' },
   { id:86, name:"Кавказский", description:"", price:500, category:"sauces", image:'' },
@@ -631,7 +669,7 @@ function dishCard(it){
     : `<button class="add-btn" data-add="${it.id}" aria-label="Добавить ${esc(it.name)} в корзину"><b>+</b> В корзину</button>`;
   const img = it.image ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy">` : '';
   
-  return `<article class="dish">
+  return `<article class="dish reveal-ready">
     <div class="dish-img">
       <div class="ph">${LOGO}<span class="ph-icon">${icon}</span><span class="ph-name">TAMYR</span></div>${img}
     </div>
@@ -641,6 +679,15 @@ function dishCard(it){
       <div class="dish-foot"><span class="price">${fmt(it.price)}</span>${action}</div>
     </div></article>`;
 }
+const dishObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        dishObserver.unobserve(entry.target);
+      }
+    }), { threshold:0.08, rootMargin:'0px 0px -24px 0px' })
+  : null;
+let menuTransitionTimer;
 function renderMenu(){
   const q = query.trim().toLowerCase();
   let html = '';
@@ -653,7 +700,17 @@ function renderMenu(){
   } else {
     html = MENU.filter(it => it.category === activeTab).map(dishCard).join('');
   }
-  $('#menuList').innerHTML = html;
+  const list = $('#menuList');
+  clearTimeout(menuTransitionTimer);
+  list.classList.add('is-changing');
+  menuTransitionTimer = setTimeout(() => {
+    list.innerHTML = html;
+    list.classList.remove('is-changing');
+    list.querySelectorAll('.dish.reveal-ready').forEach(card => {
+      if (dishObserver) dishObserver.observe(card);
+      else card.classList.add('is-visible');
+    });
+  }, 110);
 }
 
 // Битое фото: убираем <img>, остаётся заглушка (событие error не всплывает — ловим на захвате)
