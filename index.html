@@ -110,34 +110,67 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
 /* ==========================================================
    4. МЕНЮ
    ========================================================== */
-.tabs-wrap{position:sticky;top:58px;z-index:40;background:var(--bg);padding:10px 0;margin:0 -18px 18px;border-bottom:1px solid var(--line)}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:0 18px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.menu-sticky{position:sticky;top:58px;z-index:40;background:var(--bg);padding:10px 18px;margin:0 -18px 18px;border-bottom:1px solid var(--line)}
+.search{position:relative;margin-bottom:10px}
+.search svg{position:absolute;left:14px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search input{
+  width:100%;background:var(--bg-3);border:1px solid var(--line);border-radius:999px;
+  padding:12px 42px;font-size:1rem; /* 16px — без автозума на iOS */
+  outline:none;transition:border .2s;color-scheme:dark;
+}
+.search input:focus{border-color:var(--gold)}
+.search input::-webkit-search-cancel-button{display:none}
+.search-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;color:var(--muted);font-size:1rem;display:none}
+.search.has-text .search-clear{display:block}
+.tabs{display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:0 18px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
 .tabs::-webkit-scrollbar{display:none}
 .tab{
-  flex:0 0 auto;padding:10px 16px;border-radius:999px;border:1px solid var(--line);
+  flex:0 0 auto;padding:10px 16px;border-radius:999px;border:1px solid var(--line);scroll-snap-align:center;
   color:var(--sand);font-size:.88rem;white-space:nowrap;transition:.2s;
 }
+.tabs.off .tab{opacity:.45}
 .tab.active{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1b17;border-color:transparent;font-weight:600}
+.tabs.off .tab.active{background:none;color:var(--sand);border:1px solid var(--line);font-weight:400}
 
-.menu-list{display:grid;gap:12px}
+.menu-list{display:grid;gap:14px}
 @media(min-width:700px){.menu-list{grid-template-columns:1fr 1fr}}
+.cat-title{grid-column:1/-1;font-size:1.5rem;margin-top:6px}
+.no-results{grid-column:1/-1;text-align:center;color:var(--muted);padding:36px 0}
 .dish{
-  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);
-  padding:16px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow);
+  background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  display:flex;flex-direction:column;box-shadow:var(--shadow);
   animation:fade .35s ease both;
 }
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.dish h3{font-size:1.35rem;color:var(--sand)}
-.dish p{font-size:.85rem;color:var(--muted);flex:1}
-.dish-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
-.price{font-family:var(--serif);font-size:1.35rem;font-weight:700;color:var(--gold)}
-.add-btn{
-  padding:10px 16px;border-radius:999px;background:var(--wine);border:1px solid var(--gold);
-  color:var(--gold-2);font-size:.88rem;font-weight:600;transition:.2s;
+.dish-img{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--wine)}
+.dish-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.dish:hover .dish-img img,.dish:active .dish-img img{transform:scale(1.07)}
+.ph{
+  position:absolute;inset:0;display:grid;place-items:center;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 4l8 14 16 2-12 11 3 16-15-8-15 8 3-16L6 20l16-2z' fill='none' stroke='%23d4af6a' stroke-opacity='.12'/%3E%3C/svg%3E"),
+    linear-gradient(135deg,var(--wine),#24161a 70%);
 }
-.add-btn:hover{background:var(--gold);color:#2a1b17}
+.ph-logo{position:absolute;top:10px;left:10px;width:26px;height:26px;opacity:.8}
+.ph-icon{font-size:3rem;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4))}
+.ph-name{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:var(--serif);font-size:.95rem;letter-spacing:.12em;color:var(--gold);opacity:.7}
+.dish-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.dish-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.dish h3{font-size:1.5rem;color:var(--sand)}
+.weight{flex:0 0 auto;font-size:.78rem;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
+.dish p{font-size:.88rem;color:var(--muted);flex:1}
+.dish-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.price{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--gold);white-space:nowrap}
+.add-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:11px 18px;border-radius:999px;
+  background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1b17;
+  font-size:.92rem;font-weight:700;transition:transform .15s,box-shadow .2s;box-shadow:0 4px 14px rgba(212,175,106,.28);
+}
+.add-btn b{font-size:1.2rem;line-height:1}
+.add-btn:hover{box-shadow:0 6px 18px rgba(212,175,106,.45)}
+.add-btn:active{transform:scale(.95)}
 .qty{display:inline-flex;align-items:center;gap:4px;background:var(--bg-3);border-radius:999px;padding:3px}
-.qty button{width:32px;height:32px;border-radius:50%;background:var(--wine);color:var(--gold-2);font-size:1.1rem;line-height:1}
+.qty button{width:36px;height:36px;border-radius:50%;background:var(--wine);color:var(--gold-2);font-size:1.2rem;line-height:1}
 .qty span{min-width:26px;text-align:center;font-weight:600}
 .note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:20px}
 
@@ -274,7 +307,14 @@ footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;bo
     <h2 class="section-title">Меню</h2>
     <p class="section-sub">Выберите блюда и добавьте их в предзаказ</p>
 
-    <div class="tabs-wrap"><div class="tabs" id="tabs" role="tablist"></div></div>
+    <div class="menu-sticky">
+      <div class="search" id="searchBox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="search" type="search" placeholder="Поиск блюда…" autocomplete="off" aria-label="Поиск по меню">
+        <button type="button" class="search-clear" id="searchClear" aria-label="Очистить">✕</button>
+      </div>
+      <div class="tabs" id="tabs" role="tablist"></div>
+    </div>
     <div class="menu-list" id="menuList"></div>
     <p class="note">Цены указаны в тенге (₸). Актуальные цены и наличие блюд уточняйте у администратора.</p>
   </div>
@@ -369,59 +409,72 @@ footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;bo
    ========================================================== */
 const WA_NUMBER = '77087474007';
 
+/* ----------------------------------------------------------
+   КАК ДОБАВИТЬ ФОТО БЛЮДА
+   У каждого блюда есть поле image. Варианты:
+     image:'images/lagman.jpg'               — локальный файл (папка images рядом с index.html)
+     image:'https://site.kz/photos/plov.jpg' — внешняя ссылка
+     image:''                                — фото нет, покажется заглушка Tamyr
+   Если файл не найден или не загрузился, тоже покажется заглушка.
+   Пример:
+     {n:'Суйру лагман', w:'450 г', d:'…', p:3300, image:'images/suiru-lagman.jpg'},
+   Поля блюда: n — название, w — граммовка/объём, d — состав, p — цена в ₸.
+   Граммовка ориентировочная — замените на данные из техкарт.
+   Иконка заглушки задаётся полем icon у категории.
+   ---------------------------------------------------------- */
 const MENU = [
-  { id:'zakuski', title:'Закуски', items:[
-    {n:'Горское ассорти', d:'Ассорти мясных и сырных деликатесов', p:6500},
-    {n:'Кочевник', d:'Фирменная закуска по-кочевому', p:5900},
-    {n:'Мухаммара', d:'Паста из печёного перца и грецкого ореха', p:3200},
-    {n:'Хумус', d:'Нутовая паста с кунжутной пастой и оливковым маслом', p:2900},
-    {n:'Мозговая кость', d:'Запечённая кость с хрустящими гренками', p:4800},
-    {n:'Долма', d:'Виноградные листья с нежным мясным фаршем', p:3600},
+  { id:'zakuski', icon:'🥙', title:'Закуски', items:[
+    {n:'Горское ассорти', w:'350 г', d:'Ассорти мясных и сырных деликатесов', p:6500, image:''},
+    {n:'Кочевник', w:'300 г', d:'Фирменная закуска по-кочевому', p:5900, image:''},
+    {n:'Мухаммара', w:'150 г', d:'Паста из печёного перца и грецкого ореха', p:3200, image:''},
+    {n:'Хумус', w:'150 г', d:'Нутовая паста с кунжутной пастой и оливковым маслом', p:2900, image:''},
+    {n:'Мозговая кость', w:'250 г', d:'Запечённая кость с хрустящими гренками', p:4800, image:''},
+    {n:'Долма', w:'250 г', d:'Виноградные листья с нежным мясным фаршем', p:3600, image:''},
   ]},
-  { id:'salaty', title:'Салаты', items:[
-    {n:'Хрустящие баклажаны', d:'Баклажаны в кляре, томаты, сладкий соус', p:3800},
-    {n:'Ачучук', d:'Тонко нарезанные томаты с луком и зеленью', p:2400},
-    {n:'Цезарь', d:'Курица, пармезан, романо, гренки', p:3500},
-    {n:'Восточный', d:'Говядина, овощи, пряная заправка', p:3900},
-    {n:'Со страчателлой', d:'Сливочная страчателла, томаты, базилик', p:4600},
+  { id:'salaty', icon:'🥗', title:'Салаты', items:[
+    {n:'Хрустящие баклажаны', w:'250 г', d:'Баклажаны в кляре, томаты, сладкий соус', p:3800, image:''},
+    {n:'Ачучук', w:'200 г', d:'Тонко нарезанные томаты с луком и зеленью', p:2400, image:''},
+    {n:'Цезарь', w:'250 г', d:'Курица, пармезан, романо, гренки', p:3500, image:''},
+    {n:'Восточный', w:'250 г', d:'Говядина, овощи, пряная заправка', p:3900, image:''},
+    {n:'Со страчателлой', w:'250 г', d:'Сливочная страчателла, томаты, базилик', p:4600, image:''},
   ]},
-  { id:'lagman', title:'Лагманы и супы', items:[
-    {n:'Гуйру лагман', d:'Жареный лагман с говядиной и овощами', p:3400},
-    {n:'Суйру лагман', d:'Классический лагман с наваристым бульоном', p:3300},
-    {n:'Шорпа из баранины', d:'Прозрачный бульон, картофель, зелень', p:3200},
-    {n:'Чучвара', d:'Мелкие пельмени в ароматном бульоне', p:3000},
-    {n:'Том ям', d:'Острый кисло-сладкий суп с морепродуктами', p:4200},
-    {n:'Рамён', d:'Лапша в насыщенном бульоне', p:3600},
+  { id:'lagman', icon:'🍜', title:'Лагманы и супы', items:[
+    {n:'Гуйру лагман', w:'400 г', d:'Жареный лагман с говядиной и овощами', p:3400, image:''},
+    {n:'Суйру лагман', w:'450 г', d:'Классический лагман с наваристым бульоном', p:3300, image:''},
+    {n:'Шорпа из баранины', w:'400 мл', d:'Прозрачный бульон, картофель, зелень', p:3200, image:''},
+    {n:'Чучвара', w:'350 г', d:'Мелкие пельмени в ароматном бульоне', p:3000, image:''},
+    {n:'Том ям', w:'400 мл', d:'Острый кисло-сладкий суп с морепродуктами', p:4200, image:''},
+    {n:'Рамён', w:'450 мл', d:'Лапша в насыщенном бульоне', p:3600, image:''},
   ]},
-  { id:'vtorye', title:'Вторые блюда и мангал', items:[
-    {n:'Манты', d:'Крупные манты с мясом и луком', p:3200},
-    {n:'Ташкентский плов', d:'Рассыпчатый плов с говядиной и нутом', p:3600},
-    {n:'Фирменный плов «Tamyr»', d:'Авторский плов от шефа', p:4500},
-    {n:'Тай куырдак', d:'Жареное мясо жеребёнка с картофелем и луком', p:5800},
-    {n:'Стейк рибай', d:'Мраморная говядина на мангале', p:11500},
-    {n:'Шашлык из баранины', d:'Сочная баранина на углях', p:3400},
-    {n:'Люля-кебаб', d:'Рубленое мясо на мангале со специями', p:3000},
+  { id:'vtorye', icon:'🍖', title:'Вторые блюда и мангал', items:[
+    {n:'Манты', w:'300 г', d:'Крупные манты с мясом и луком', p:3200, image:''},
+    {n:'Ташкентский плов', w:'350 г', d:'Рассыпчатый плов с говядиной и нутом', p:3600, image:''},
+    {n:'Фирменный плов «Tamyr»', w:'400 г', d:'Авторский плов от шефа', p:4500, image:''},
+    {n:'Тай куырдак', w:'300 г', d:'Жареное мясо жеребёнка с картофелем и луком', p:5800, image:''},
+    {n:'Стейк рибай', w:'300 г', d:'Мраморная говядина на мангале', p:11500, image:''},
+    {n:'Шашлык из баранины', w:'150 г', d:'Сочная баранина на углях', p:3400, image:''},
+    {n:'Люля-кебаб', w:'150 г', d:'Рубленое мясо на мангале со специями', p:3000, image:''},
   ]},
-  { id:'pech', title:'Турецкая печь и пицца', items:[
-    {n:'Пиде', d:'Турецкая лодочка с мясом и сыром', p:4200},
-    {n:'Лахмаджун', d:'Тонкая лепёшка с пряным мясным фаршем', p:3000},
-    {n:'Хачапури', d:'По-аджарски, с сыром и яйцом', p:3800},
-    {n:'Сэндвич', d:'Горячий сэндвич из печи', p:3500},
-    {n:'Пицца Маргарита', d:'Томаты, моцарелла, базилик', p:4200},
-    {n:'Пицца Мясная', d:'Халяль-мясо, сыр, соус', p:5200},
+  { id:'pech', icon:'🍕', title:'Турецкая печь и пицца', items:[
+    {n:'Пиде', w:'400 г', d:'Турецкая лодочка с мясом и сыром', p:4200, image:''},
+    {n:'Лахмаджун', w:'250 г', d:'Тонкая лепёшка с пряным мясным фаршем', p:3000, image:''},
+    {n:'Хачапури', w:'350 г', d:'По-аджарски, с сыром и яйцом', p:3800, image:''},
+    {n:'Сэндвич', w:'300 г', d:'Горячий сэндвич из печи', p:3500, image:''},
+    {n:'Пицца Маргарита', w:'450 г', d:'Томаты, моцарелла, базилик', p:4200, image:''},
+    {n:'Пицца Мясная', w:'500 г', d:'Халяль-мясо, сыр, соус', p:5200, image:''},
   ]},
-  { id:'kompaniya', title:'На жаровне и на компанию', items:[
-    {n:'Казан кебаб', d:'Мясо с картофелем, томлёное на жаровне', p:7800},
-    {n:'Бешбармак', d:'Национальное блюдо — мясо и тонкое тесто', p:8500},
-    {n:'Сет из шашлыков', d:'Ассорти шашлыков на компанию', p:19500},
+  { id:'kompaniya', icon:'🍲', title:'На жаровне и на компанию', items:[
+    {n:'Казан кебаб', w:'800 г', d:'Мясо с картофелем, томлёное на жаровне', p:7800, image:''},
+    {n:'Бешбармак', w:'900 г', d:'Национальное блюдо — мясо и тонкое тесто', p:8500, image:''},
+    {n:'Сет из шашлыков', w:'1,5 кг', d:'Ассорти шашлыков на компанию', p:19500, image:''},
   ]},
-  { id:'bar', title:'Бар и десерты', items:[
-    {n:'Авторский чай', d:'Чайник ароматного чая на травах и специях', p:2800},
-    {n:'Лимонад', d:'Домашний, в ассортименте', p:2200},
-    {n:'Морс', d:'Ягодный морс, 1 л', p:2500},
-    {n:'Кофе', d:'Американо, капучино, латте', p:1800},
-    {n:'Чизкейк', d:'Нежный сливочный чизкейк', p:2900},
-    {n:'Тирамису', d:'Классический десерт с маскарпоне', p:3100},
+  { id:'bar', icon:'🍵', title:'Бар и десерты', items:[
+    {n:'Авторский чай', w:'1 л', d:'Чайник ароматного чая на травах и специях', p:2800, image:''},
+    {n:'Лимонад', w:'500 мл', d:'Домашний, в ассортименте', p:2200, image:''},
+    {n:'Морс', w:'1 л', d:'Ягодный морс, 1 л', p:2500, image:''},
+    {n:'Кофе', w:'250 мл', d:'Американо, капучино, латте', p:1800, image:''},
+    {n:'Чизкейк', w:'150 г', d:'Нежный сливочный чизкейк', p:2900, image:''},
+    {n:'Тирамису', w:'150 г', d:'Классический десерт с маскарпоне', p:3100, image:''},
   ]},
 ];
 
@@ -438,6 +491,7 @@ try { cart = JSON.parse(localStorage.getItem('tamyr_cart') || '{}'); } catch(e){
 Object.keys(cart).forEach(id => { if (!ALL[id]) delete cart[id]; });
 
 let activeTab = MENU[0].id;
+let query = '';
 
 const $ = s => document.querySelector(s);
 const fmt = n => n.toLocaleString('ru-RU').replace(/ /g,' ') + ' ₸';
@@ -448,21 +502,65 @@ const total = () => Object.entries(cart).reduce((s,[id,q]) => s + ALL[id].p*q, 0
 /* ==========================================================
    РЕНДЕР МЕНЮ
    ========================================================== */
+const LOGO = '<svg class="ph-logo" viewBox="0 0 64 64" aria-hidden="true"><path d="M44 8a26 26 0 1 0 0 48 21 21 0 1 1 0-48z" fill="#d4af6a"/><path d="M46 22l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z" fill="#f0d9a0"/></svg>';
+const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 function renderTabs(){
+  $('#tabs').classList.toggle('off', !!query);
   $('#tabs').innerHTML = MENU.map(c =>
     `<button class="tab ${c.id===activeTab?'active':''}" role="tab" data-tab="${c.id}">${c.title}</button>`).join('');
+  const act = $('.tab.active');
+  if (act && !query) act.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+}
+function dishCard(it, icon){
+  const q = cart[it.id] || 0;
+  const action = q
+    ? `<div class="qty"><button data-dec="${it.id}" aria-label="Меньше">−</button><span>${q}</span><button data-inc="${it.id}" aria-label="Больше">+</button></div>`
+    : `<button class="add-btn" data-add="${it.id}" aria-label="Добавить ${esc(it.n)} в корзину"><b>+</b> В корзину</button>`;
+  const img = it.image ? `<img src="${esc(it.image)}" alt="${esc(it.n)}" loading="lazy">` : '';
+  const weight = it.w ? `<span class="weight">${it.w}</span>` : '';
+  return `<article class="dish">
+    <div class="dish-img">
+      <div class="ph">${LOGO}<span class="ph-icon">${icon}</span><span class="ph-name">TAMYR</span></div>${img}
+    </div>
+    <div class="dish-body">
+      <div class="dish-head"><h3>${it.n}</h3>${weight}</div>
+      <p>${it.d}</p>
+      <div class="dish-foot"><span class="price">${fmt(it.p)}</span>${action}</div>
+    </div></article>`;
 }
 function renderMenu(){
-  const cat = MENU.find(c => c.id === activeTab);
-  $('#menuList').innerHTML = cat.items.map(it => {
-    const q = cart[it.id] || 0;
-    const action = q
-      ? `<div class="qty"><button data-dec="${it.id}" aria-label="Меньше">−</button><span>${q}</span><button data-inc="${it.id}" aria-label="Больше">+</button></div>`
-      : `<button class="add-btn" data-add="${it.id}">В корзину</button>`;
-    return `<article class="dish"><h3>${it.n}</h3><p>${it.d}</p>
-      <div class="dish-foot"><span class="price">${fmt(it.p)}</span>${action}</div></article>`;
-  }).join('');
+  const q = query.trim().toLowerCase();
+  let html = '';
+  if (q){
+    MENU.forEach(c => {
+      const found = c.items.filter(it => (it.n + ' ' + it.d).toLowerCase().includes(q));
+      if (found.length) html += `<h3 class="cat-title">${c.title}</h3>` + found.map(it => dishCard(it, c.icon)).join('');
+    });
+    if (!html) html = '<div class="no-results">Ничего не найдено. Попробуйте другое название.</div>';
+  } else {
+    const cat = MENU.find(c => c.id === activeTab);
+    html = cat.items.map(it => dishCard(it, cat.icon)).join('');
+  }
+  $('#menuList').innerHTML = html;
 }
+
+// Битое фото: убираем <img>, остаётся заглушка (событие error не всплывает — ловим на захвате)
+document.addEventListener('error', e => {
+  if (e.target.tagName === 'IMG' && e.target.closest('.dish-img')) e.target.remove();
+}, true);
+
+// Поиск
+$('#search').addEventListener('input', e => {
+  query = e.target.value;
+  $('#searchBox').classList.toggle('has-text', !!query);
+  renderTabs(); renderMenu();
+});
+$('#searchClear').addEventListener('click', () => {
+  $('#search').value = ''; query = '';
+  $('#searchBox').classList.remove('has-text');
+  renderTabs(); renderMenu(); $('#search').focus();
+});
 
 /* ==========================================================
    РЕНДЕР КОРЗИНЫ (панель, плавающая кнопка, блок в форме)
@@ -517,7 +615,13 @@ function del(id){ delete cart[id]; refresh(); }
 document.addEventListener('click', e => {
   const t = e.target.closest('button, a');
   if (!t) return;
-  if (t.dataset.tab){ activeTab = t.dataset.tab; renderTabs(); renderMenu(); return; }
+  if (t.dataset.tab){
+    activeTab = t.dataset.tab; query = ''; $('#search').value = ''; $('#searchBox').classList.remove('has-text');
+    renderTabs(); renderMenu();
+    const top = $('#menu').getBoundingClientRect().top + scrollY;
+    if (scrollY > top + 120) scrollTo({top: top + 120, behavior:'smooth'});
+    return;
+  }
   if (t.dataset.add){ add(t.dataset.add); return; }
   if (t.dataset.inc){ add(t.dataset.inc); return; }
   if (t.dataset.dec){ dec(t.dataset.dec); return; }
