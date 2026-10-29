@@ -34,10 +34,9 @@ html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{
   font-family:var(--sans);color:var(--sand);background:var(--bg);isolation:isolate;
   line-height:1.55;overflow-x:hidden;
-  padding-bottom:env(safe-area-inset-bottom);
-  transition:padding-bottom .3s ease;
+  /* место под плавающую кнопку резервируем всегда — иначе страница «прыгает» при первом добавлении */
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
 }
-body.has-cart{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 body::before{
   content:"";position:fixed;inset:-18%;z-index:-1;pointer-events:none;
   background:
@@ -190,7 +189,8 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.1;color:var(--go
 .dish h3{font-size:1.5rem;color:var(--sand)}
 .weight{flex:0 0 auto;font-size:.78rem;color:var(--gold);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap}
 .dish p{font-size:.88rem;color:var(--muted);flex:1}
-.dish-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.dish-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;min-height:48px}
+.dish-action{display:inline-flex;align-items:center;justify-content:flex-end}
 .price{font-family:var(--serif);font-size:1.6rem;font-weight:700;color:var(--gold);white-space:nowrap}
 .add-btn{
   display:inline-flex;align-items:center;gap:6px;padding:11px 18px;border-radius:999px;
@@ -702,14 +702,14 @@ function dishCard(it){
     : `<button class="add-btn" data-add="${it.id}" aria-label="Добавить ${esc(it.name)} в корзину"><b>+</b> В корзину</button>`;
   const img = it.image ? `<img src="${esc(it.image)}" alt="${esc(it.name)}" loading="lazy">` : '';
   
-  return `<article class="dish reveal-ready">
+  return `<article class="dish reveal-ready" data-id="${esc(it.id)}">
     <div class="dish-img">
       <div class="ph">${LOGO}<span class="ph-icon">${icon}</span><span class="ph-name">TAMYR</span></div>${img}
     </div>
     <div class="dish-body">
       <div class="dish-head"><h3>${it.name}</h3></div>
       ${it.description ? `<p>${it.description}</p>` : ''}
-      <div class="dish-foot"><span class="price">${fmt(it.price)}</span>${action}</div>
+      <div class="dish-foot"><span class="price">${fmt(it.price)}</span><span class="dish-action">${action}</span></div>
     </div></article>`;
 }
 const dishObserver = 'IntersectionObserver' in window
@@ -810,23 +810,39 @@ function renderCart(){
     : `<h4>Предзаказ</h4><p class="pre-empty">Блюда не выбраны — можно забронировать только стол или <a href="#menu" style="color:var(--gold)">выбрать блюда в меню</a>.</p>`;
 }
 
-function refresh(){ save(); renderMenu(); renderCart(); }
+// Точечное обновление кнопки/счётчика в карточке (без перестройки списка и сброса скролла)
+function updateDishCard(id){
+  const card = $('#menuList').querySelector(`.dish[data-id="${CSS.escape(id)}"]`);
+  const slot = card && card.querySelector('.dish-action');
+  if (!slot) return;
+  const it = ALL[id], q = cart[id] || 0;
+  const cur = slot.querySelector('.qty span');
+  if (q && cur){ cur.textContent = q; return; }
+  slot.innerHTML = q
+    ? `<div class="qty"><button data-dec="${id}" aria-label="Меньше">−</button><span>${q}</span><button data-inc="${id}" aria-label="Больше">+</button></div>`
+    : `<button class="add-btn" data-add="${id}" aria-label="Добавить ${esc(it.name)} в корзину"><b>+</b> В корзину</button>`;
+}
+function refresh(id){
+  save();
+  if (id) updateDishCard(id); else renderMenu();
+  renderCart();
+}
 
 /* ==========================================================
    ДЕЙСТВИЯ С КОРЗИНОЙ
    ========================================================== */
 function add(id){
   cart[id] = (cart[id]||0) + 1;
-  refresh();
+  refresh(id);
   const fab = $('#cartFab');
   fab.classList.remove('bump'); void fab.offsetWidth; fab.classList.add('bump');
 }
 function dec(id){
   if (!cart[id]) return;
   if (--cart[id] <= 0) delete cart[id];
-  refresh();
+  refresh(id);
 }
-function del(id){ delete cart[id]; refresh(); }
+function del(id){ delete cart[id]; refresh(id); }
 
 // Делегирование кликов
 document.addEventListener('click', e => {
