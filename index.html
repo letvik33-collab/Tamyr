@@ -34,8 +34,10 @@ html{scroll-behavior:smooth;scroll-padding-top:70px}
 body{
   font-family:var(--sans);color:var(--sand);background:var(--bg);isolation:isolate;
   line-height:1.55;overflow-x:hidden;
-  padding-bottom:calc(90px + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  transition:padding-bottom .3s ease;
 }
+body.has-cart{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
 body::before{
   content:"";position:fixed;inset:-18%;z-index:-1;pointer-events:none;
   background:
@@ -241,6 +243,10 @@ footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;bo
   .add-btn{padding:10px 13px;font-size:.86rem}
   .price{font-size:1.4rem}
   .hero{padding:56px 0 48px}
+  .menu-sticky{padding:8px 14px;margin:0 -14px 14px}
+  .tabs{margin:0 -14px;padding:0 14px 2px}
+  .card{padding:18px 16px}
+  section{padding:44px 0}
 }
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -255,11 +261,18 @@ footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;bo
   position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:60;
   display:flex;align-items:center;gap:12px;padding:12px 18px;border-radius:999px;
   background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1b17;font-weight:700;
-  box-shadow:0 8px 28px rgba(0,0,0,.5);transition:transform .2s;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);
+  /* скрыта, пока корзина пуста */
+  opacity:0;visibility:hidden;pointer-events:none;transform:translateY(24px) scale(.9);
+  transition:opacity .25s,transform .3s ease,visibility 0s .3s;
 }
-.cart-fab.bump{animation:bump .35s}
+.cart-fab.has-items{
+  opacity:1;visibility:visible;pointer-events:auto;transform:none;
+  transition:opacity .25s,transform .3s ease,visibility 0s;
+  animation:cart-glow 2.8s ease-in-out infinite;
+}
+.cart-fab.has-items.bump{animation:bump .35s}
 @keyframes bump{50%{transform:scale(1.12)}}
-.cart-fab.has-items{animation:cart-glow 2.8s ease-in-out infinite}
 @keyframes cart-glow{50%{box-shadow:0 8px 34px rgba(212,175,106,.48),0 0 0 6px rgba(212,175,106,.07)}}
 .cart-fab svg{width:24px;height:24px}
 .cart-fab .badge{background:var(--wine);color:var(--gold-2);border-radius:999px;min-width:24px;height:24px;display:grid;place-items:center;font-size:.8rem;padding:0 6px}
@@ -292,11 +305,21 @@ footer{text-align:center;padding:26px 18px;color:var(--muted);font-size:.8rem;bo
 .empty{text-align:center;color:var(--muted);padding:40px 0}
 
 .toast{
-  position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);z-index:90;
+  position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);z-index:90;
   background:var(--wine);border:1px solid var(--gold);color:var(--gold-2);padding:10px 18px;border-radius:999px;
   font-size:.88rem;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center
 }
 .toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:520px){
+  .cart-fab{left:14px;right:14px;justify-content:center;padding:12px 16px}
+  .cart-fab #fabSum{flex:1;text-align:center}
+  .drawer-head{padding:14px 16px}
+  .drawer-head h3{font-size:1.4rem}
+  .drawer-body{padding:8px 16px;overscroll-behavior:contain}
+  .drawer-foot{padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .ci{padding:10px 0}
+  .total{font-size:1.3rem}
+}
 </style>
 </head>
 
@@ -773,6 +796,8 @@ function renderCart(){
   $('#fabCount').textContent = count();
   $('#fabSum').textContent = fmt(total());
   $('#cartFab').classList.toggle('has-items', ids.length > 0);
+  document.body.classList.toggle('has-cart', ids.length > 0);
+  if (!ids.length) closeCart(); // пустая корзина сворачивается сама
 
   // Блок предзаказа в форме
   $('#preBox').innerHTML = ids.length
